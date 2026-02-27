@@ -28,15 +28,15 @@ jobs:
 
       - name: Lint with ruff
         run: |
-          ruff check safeget/
+          ruff check trustget/
 
       - name: Type check with mypy
         run: |
-          mypy safeget/ --ignore-missing-imports
+          mypy trustget/ --ignore-missing-imports
 
       - name: Test with pytest
         run: |
-          pytest tests/ -v --cov=safeget --cov-report=xml
+          pytest tests/ -v --cov=trustget --cov-report=xml
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
@@ -96,10 +96,8 @@ jobs:
           name: dist
           path: dist/
 
-      - name: Publish to PyPI
-        env:
-          TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-        run: |
-          pip install twine
-          twine upload dist/*
+      - name: Publish to PyPI using Trusted Publishing
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          verbose: true
+          print-hash: true
