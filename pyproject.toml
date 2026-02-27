@@ -1,6 +1,6 @@
 [project]
 name = "trustget"
-version = "0.2.0"
+version = "0.2.1"
 description = "wget yang punya otak keamanan — download + verify + trust analysis"
 readme = "README.md"
 license-files = ["LICENSE"]
