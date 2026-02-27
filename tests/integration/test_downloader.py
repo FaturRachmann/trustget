@@ -17,8 +17,10 @@ class TestDownloaderIntegration:
 
     def test_download_invalid_url(self, downloader: Downloader):
         """Test download with invalid URL."""
+        # Use a URL that will definitely fail (no DNS resolution)
+        # or use localhost with invalid port
         with pytest.raises(DownloadError):
-            downloader.download("http://invalid-url-that-does-not-exist.com/file.txt")
+            downloader.download("http://localhost:65432/nonexistent-file-that-will-fail.txt")
 
     def test_download_with_output_dir(self, downloader: Downloader):
         """Test download respects output directory."""
