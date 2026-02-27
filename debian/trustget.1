@@ -1,0 +1,162 @@
+.TH TRUSTGET 1 "February 2026" "TrustGet 0.1.0" "User Commands"
+
+.SH NAME
+trustget, sg \- secure file downloader with automatic verification
+
+.SH SYNOPSIS
+.B sg
+[\fIOPTIONS\fR] \fIURL\fR
+.br
+.B trustget
+[\fIOPTIONS\fR] \fIURL\fR
+
+.SH DESCRIPTION
+TrustGet is a secure alternative to wget that adds automatic verification and trust analysis.
+It automatically finds and verifies checksums, analyzes GitHub Releases, and provides a
+transparent trust score.
+
+.SH COMMANDS
+.TP
+.B sg download \fIURL\fR
+Download file with automatic verification and trust analysis
+.TP
+.B sg verify \fIFILE\fR
+Verify file against checksum
+.TP
+.B sg trust \fIURL\fR
+Analyze trust score of URL without downloading
+.TP
+.B sg run \fIFILE\fR
+Execute file with sandbox isolation
+.TP
+.B sg info \fIURL\fR
+Show metadata about file/release without downloading
+.TP
+.B sg config
+Manage TrustGet configuration
+
+.SH OPTIONS
+.TP
+.BR \-j ", " \-\-json
+Output in JSON format
+.TP
+.BR \-q ", " \-\-quiet
+Suppress non-essential output
+.TP
+.BR \-v ", " \-\-verbose
+Enable verbose output
+.TP
+.BR \-o ", " \-\-output
+Output directory for downloaded file
+.TP
+.BR \-t ", " \-\-timeout
+HTTP request timeout in seconds (default: 30)
+.TP
+.BR \-r ", " \-\-retry
+Number of retry attempts (default: 3)
+.TP
+.BR \-f ", " \-\-force
+Force download even if trust score is low
+.TP
+.BR \-\-no\-verify
+Skip checksum verification
+.TP
+.BR \-\-no\-color
+Disable colored output
+
+.SH EXAMPLES
+.PP
+Download with automatic verification:
+.RS
+.nf
+$ sg https://github.com/cli/cli/releases/download/v2.40.0/gh_2.40.0_linux_amd64.tar.gz
+.fi
+.RE
+
+.PP
+Check trust score without downloading:
+.RS
+.nf
+$ sg trust https://example.com/file.tar.gz
+.fi
+.RE
+
+.PP
+Verify local file:
+.RS
+.nf
+$ sg verify ./file.tar.gz
+.fi
+.RE
+
+.PP
+JSON output for CI/CD:
+.RS
+.nf
+$ sg \-\-json https://example.com/file.tar.gz | jq
+.fi
+.RE
+
+.SH TRUST SCORE
+TrustGet calculates a trust score (0-100) based on:
+.RS
+.IP \(bu 2
+HTTPS connection (+20)
+.IP \(bu 2
+Checksum verified (+25)
+.IP \(bu 2
+Known domain (+10)
+.IP \(bu 2
+Maintainer verified (+20)
+.IP \(bu 2
+Repository age > 1 year (+7)
+.IP \(bu 2
+Recent release (+10)
+.IP \(bu 2
+Unknown domain (\-20)
+.IP \(bu 2
+No checksum (\-15)
+.RE
+
+.Risk Levels:
+.RS
+.IP \(bu 2
+CRITICAL (<40): Abort download
+.IP \(bu 2
+HIGH (40-59): Confirm with user
+.IP \(bu 2
+MEDIUM (60-79): Proceed with warning
+.IP \(bu 2
+LOW (80-100): Safe to proceed
+.RE
+
+.SH ENVIRONMENT
+.TP
+.B TRUSTGET_GITHUB_TOKEN
+GitHub personal access token for higher API rate limits
+
+.SH FILES
+.TP
+.B ~/.config/trustget/config.toml
+Configuration file
+
+.SH EXIT STATUS
+.TP
+.B 0
+Success
+.TP
+.B 1
+General error or download failed
+.TP
+.B 2
+Checksum verification failed
+
+.SH AUTHOR
+TrustGet Team <trustget@example.com>
+
+.SH SEE ALSO
+.BR wget (1),
+.BR curl (1)
+
+.SH BUGS
+Report bugs at https://github.com/FaturRachmann/trustget/issues

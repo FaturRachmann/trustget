@@ -217,7 +217,7 @@ class GitHubClient:
             self._session = requests.Session()
             self._session.headers.update(
                 {
-                    "User-Agent": "TrustGet/0.1.0 (https://github.com/trustget/trustget)",
+                    "User-Agent": "TrustGet/0.1.0 (https://github.com/FaturRachmann/trustget)",
                     "Accept": "application/vnd.github+json",
                     "X-GitHub-Api-Version": "2022-11-28",
                 }

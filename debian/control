@@ -1,0 +1,35 @@
+Source: trustget
+Section: utils
+Priority: optional
+Maintainer: TrustGet Team <trustget@example.com>
+Build-Depends: debhelper-compat (= 13),
+               python3-all,
+               python3-setuptools,
+               python3-build,
+               python3-installer,
+               python3-wheel
+Standards-Version: 4.6.2
+Homepage: https://github.com/FaturRachmann/trustget
+Rules-Requires-Root: no
+
+Package: trustget
+Architecture: all
+Depends: ${misc:Depends},
+         ${python3:Depends},
+         python3-requests,
+         python3-rich,
+         python3-click,
+         python3-gnupg,
+         python3-platformdirs
+Description: Secure file downloader with automatic verification
+ TrustGet is a secure alternative to wget that adds automatic verification
+ and trust analysis. It automatically finds and verifies checksums,
+ analyzes GitHub Releases, and provides a transparent trust score.
+ .
+ Features:
+  - Streaming download with progress bar
+  - Automatic checksum verification (SHA256/SHA512/MD5)
+  - GitHub Releases integration
+  - Trust score analysis (0-100)
+  - GPG signature verification
+  - Sandbox execution support

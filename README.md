@@ -1,12 +1,12 @@
-# 🔐 Trustget
+# 🔐 TrustGet
 
 > **wget yang punya otak keamanan.**
 >
-> Trustget = download + verify + trust analysis — satu perintah, nol drama.
+> TrustGet = download + verify + trust analysis — satu perintah, nol drama.
 
-[![PyPI version](https://img.shields.io/pypi/v/Trustget.svg)](https://pypi.org/project/Trustget/)
-[![Python versions](https://img.shields.io/pypi/pyversions/Trustget.svg)](https://pypi.org/project/Trustget/)
-[![Build Status](https://github.com/Trustget/Trustget/actions/workflows/ci.yml/badge.svg)](https://github.com/Trustget/Trustget/actions)
+[![PyPI version](https://img.shields.io/pypi/v/trustget.svg)](https://pypi.org/project/trustget/)
+[![Python versions](https://img.shields.io/pypi/pyversions/trustget.svg)](https://pypi.org/project/trustget/)
+[![Build Status](https://github.com/FaturRachmann/trustget/actions/workflows/ci.yml/badge.svg)](https://github.com/FaturRachmann/trustget/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **Built for:** SysAdmin · DevOps · Homelab · Linux Dev
@@ -28,13 +28,27 @@
 
 ### Installation
 
+#### From PyPI (Recommended)
+
 ```bash
-pip install Trustget
+pip install trustget
 ```
 
-Or for development:
+#### From apt (Debian/Ubuntu)
 
 ```bash
+# Download the .deb package from releases
+wget https://github.com/FaturRachmann/trustget/releases/latest/download/trustget_0.1.0_all.deb
+
+# Install
+sudo apt install ./trustget_0.1.0_all.deb
+```
+
+#### From Source
+
+```bash
+git clone https://github.com/FaturRachmann/trustget.git
+cd trustget
 pip install -e ".[dev]"
 ```
 
@@ -42,22 +56,22 @@ pip install -e ".[dev]"
 
 ```bash
 # Download with automatic verification
-Trustget https://github.com/cli/cli/releases/download/v2.40.0/gh_2.40.0_linux_amd64.tar.gz
+sg https://github.com/cli/cli/releases/download/v2.40.0/gh_2.40.0_linux_amd64.tar.gz
 
-# Or use the shortcut
-sgt <url>
+# Or use the full command
+trustget <url>
 
 # Just verify a local file
-Trustget verify ./file.tar.gz
+sg verify ./file.tar.gz
 
 # Check trust score without downloading
-Trustget trust https://example.com/file.tar.gz
+sg trust https://example.com/file.tar.gz
 
 # Get release info
-Trustget info https://github.com/user/repo/releases/download/v1.0/file.tar.gz
+sg info https://github.com/user/repo/releases/download/v1.0/file.tar.gz
 
 # Run in sandbox (experimental)
-Trustget run ./AppImage
+sg run ./AppImage
 ```
 
 ---

@@ -1,0 +1,12 @@
+trustget (0.1.0) unstable; urgency=medium
+
+  * Initial release
+  - Smart download with progress bar and resume support
+  - Automatic checksum verification (SHA256/SHA512/MD5)
+  - GitHub Releases integration with metadata extraction
+  - Trust score engine with transparent scoring (0-100)
+  - GPG signature verification
+  - Sandbox execution support
+  - JSON output for CI/CD integration
+
+ -- TrustGet Team <trustget@example.com>  Fri, 27 Feb 2026 00:00:00 +0000

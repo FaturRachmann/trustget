@@ -3,7 +3,7 @@ name = "trustget"
 version = "0.1.0"
 description = "wget yang punya otak keamanan — download + verify + trust analysis"
 readme = "README.md"
-license = {text = "MIT"}
+license-files = ["LICENSE"]
 requires-python = ">=3.11"
 authors = [
   {name = "TrustGet Team", email = "trustget@example.com"}
@@ -41,13 +41,15 @@ dev = [
   "ruff>=0.1.0",
   "mypy>=1.0",
   "pre-commit>=3.0",
+  "build>=1.0.0",
+  "twine>=4.0.0",
 ]
 
 [project.urls]
-Homepage = "https://github.com/trustget/trustget"
-Repository = "https://github.com/trustget/trustget"
-Issues = "https://github.com/trustget/trustget/issues"
-Changelog = "https://github.com/trustget/trustget/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/FaturRachmann/trustget"
+Repository = "https://github.com/FaturRachmann/trustget"
+Issues = "https://github.com/FaturRachmann/trustget/issues"
+Changelog = "https://github.com/FaturRachmann/trustget/blob/main/CHANGELOG.md"
 
 [build-system]
 requires = ["hatchling"]

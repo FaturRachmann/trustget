@@ -129,7 +129,7 @@ class Downloader:
             self._session = requests.Session()
             self._session.headers.update(
                 {
-                    "User-Agent": "TrustGet/0.1.0 (https://github.com/trustget/trustget)",
+                    "User-Agent": "TrustGet/0.1.0 (https://github.com/FaturRachmann/trustget)",
                 }
             )
         return self._session

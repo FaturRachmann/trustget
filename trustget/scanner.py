@@ -161,7 +161,7 @@ class Scanner:
     ]
 
     DEFAULT_TIMEOUT = 10
-    USER_AGENT = "TrustGet/0.1.0 (https://github.com/trustget/trustget)"
+    USER_AGENT = "TrustGet/0.1.0 (https://github.com/FaturRachmann/trustget)"
 
     def __init__(self, timeout: int = DEFAULT_TIMEOUT):
         """
