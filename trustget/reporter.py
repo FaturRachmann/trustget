@@ -124,6 +124,24 @@ class Reporter:
         score_text = f"{report.score} / 100"
         risk_text = f"{report.risk_level.emoji} {report.risk_level.value}"
 
+        # Display GitHub info if available
+        if "github" in report.metadata:
+            gh_info = report.metadata["github"]
+            self.console.print("\n[bold cyan]🐙 GitHub Repository[/]")
+            self.console.print(f"  [bold]{gh_info.get('owner', 'N/A')}/{gh_info.get('repo', 'N/A')}[/]")
+
+            if gh_info.get('description'):
+                self.console.print(f"  [dim]{gh_info['description'][:80]}[/]")
+
+            stars = gh_info.get('stars', 0)
+            age_days = gh_info.get('repo_age_days', 0)
+            self.console.print(f"  ⭐ {stars} stars  •  📅 {age_days} days old")
+
+            if 'tag' in gh_info:
+                self.console.print(f"  🏷️  Release: [bold]{gh_info['tag']}[/]")
+
+            self.console.print()
+
         # Build factors table
         factors_table = Table(show_header=False, box=None, padding=(0, 1))
         factors_table.add_column("Factor", style="white")
@@ -146,10 +164,35 @@ class Reporter:
             if factor.applied:
                 points_style = "green" if factor.weight > 0 else "red"
                 symbol = "✓" if factor.weight > 0 else "⚠"
-                line = f"  {symbol} {factor.name:<35} {factor.display_weight}"
+                # Truncate long factor names
+                factor_name = factor.name[:35].ljust(35)
+                line = f"  {symbol} {factor_name} {factor.display_weight}"
                 self.console.print(f"│  {line}    │")
 
         self.console.print(f"└{'─' * 50}┘")
+
+        # Add recommendation based on risk level
+        self._output_recommendation(report)
+
+    def _output_recommendation(self, report: TrustReport) -> None:
+        """Output recommendation based on trust score."""
+        recommendations = {
+            "LOW": "[green]✓ Safe to download[/] • No security concerns detected",
+            "MEDIUM": "[yellow]⚠ Proceed with caution[/] • Consider verifying checksum manually",
+            "HIGH": "[orange1]⚠ High risk detected[/] • Manual verification recommended before download",
+            "CRITICAL": "[red]✗ NOT RECOMMENDED[/] • Do not download unless you trust the source",
+        }
+
+        recommendation = recommendations.get(report.risk_level.value, "")
+        if recommendation:
+            self.console.print(f"\n{recommendation}")
+
+        # Add quick tips
+        if report.score < 60:
+            self.console.print("\n[dim]💡 Tips to improve trust:[/]")
+            self.console.print("  • Look for official checksums on the project website")
+            self.console.print("  • Check if the repository has active maintainers")
+            self.console.print("  • Verify GPG signatures if available")
 
     def output_github_info(self, release: GitHubRelease) -> None:
         """Output GitHub Release information."""

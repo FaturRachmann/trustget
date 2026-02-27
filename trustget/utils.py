@@ -114,8 +114,15 @@ def is_github_releases_url(url: str) -> bool:
     return bool(re.match(pattern, url))
 
 
+def is_github_url(url: str) -> bool:
+    """Check if URL is any GitHub URL."""
+    pattern = r"^https?://github\.com/[^/]+/[^/]+"
+    return bool(re.match(pattern, url))
+
+
 def parse_github_url(url: str) -> dict[str, str] | None:
     """Parse GitHub URL to extract owner, repo, tag, and filename."""
+    # Try releases URL pattern first
     pattern = r"^https?://github\.com/([^/]+)/([^/]+)/releases/download/([^/]+)/(.+)$"
     match = re.match(pattern, url)
 
@@ -125,7 +132,22 @@ def parse_github_url(url: str) -> dict[str, str] | None:
             "repo": match.group(2),
             "tag": match.group(3),
             "filename": match.group(4),
+            "type": "release",
         }
+
+    # Try general GitHub URL pattern
+    pattern = r"^https?://github\.com/([^/]+)/([^/]+)(?:/(tree|blob)/([^/]+)(?:/(.+))?)?$"
+    match = re.match(pattern, url)
+
+    if match:
+        return {
+            "owner": match.group(1),
+            "repo": match.group(2),
+            "type": match.group(3) or "repo",
+            "ref": match.group(4) if match.group(4) else "main",
+            "path": match.group(5) if match.group(5) else "",
+        }
+
     return None
 
 

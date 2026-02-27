@@ -22,7 +22,7 @@ from typing import Any
 from urllib.parse import urlparse
 
 from trustget.github import GitHubClient
-from trustget.utils import is_github_releases_url, parse_github_url
+from trustget.utils import is_github_url, parse_github_url
 
 
 class RiskLevel(Enum):
@@ -296,40 +296,28 @@ class TrustEngine:
         parsed = urlparse(url)
         return parsed.scheme == "https"
 
-    def _analyze_github_release(
+    def _analyze_github_resource(
         self,
         url: str,
         report: TrustReport,
     ) -> None:
-        """Analyze GitHub Release and add factors."""
+        """Analyze GitHub resource (release or repo) and add factors."""
         parsed = parse_github_url(url)
         if not parsed:
             return
 
         try:
             client = self.github_client
-            release = client.get_release(parsed["owner"], parsed["repo"], parsed["tag"])
             repo = client.get_repo(parsed["owner"], parsed["repo"])
 
-            # Maintainer verification
-            if client.is_maintainer(release):
-                report.factors.append(
-                    self._create_factor(
-                        "maintainer_verified",
-                        self.weights["maintainer_verified"],
-                        applied=True,
-                        reason=f"Release by @{release.author_login} (repo owner)",
-                    )
-                )
-
-            # Repo age
+            # Repo age - always check for any GitHub URL
             if repo.is_established:
                 report.factors.append(
                     self._create_factor(
                         "repo_age_established",
                         self.weights["repo_age_established"],
                         applied=True,
-                        reason=f"Repository is {repo.age_days} days old",
+                        reason=f"Repository is {repo.age_days} days old ({repo.stargazers_count}⭐)",
                     )
                 )
             elif repo.is_new:
@@ -342,39 +330,56 @@ class TrustEngine:
                     )
                 )
 
-            # Release recency
-            if release.is_recent:
-                report.factors.append(
-                    self._create_factor(
-                        "release_recent",
-                        self.weights["release_recent"],
-                        applied=True,
-                        reason=f"Release published {release.age_days} days ago",
-                    )
-                )
+            # Additional factors for releases
+            if parsed.get("type") == "release":
+                release = client.get_release(parsed["owner"], parsed["repo"], parsed["tag"])
 
-            # Pre-release / draft warning
-            if release.is_prerelease or release.is_draft:
-                report.factors.append(
-                    self._create_factor(
-                        "prerelease",
-                        self.weights["prerelease"],
-                        applied=True,
-                        reason="This is a pre-release or draft version",
+                # Maintainer verification
+                if client.is_maintainer(release):
+                    report.factors.append(
+                        self._create_factor(
+                            "maintainer_verified",
+                            self.weights["maintainer_verified"],
+                            applied=True,
+                            reason=f"Release by @{release.author_login} (repo owner)",
+                        )
                     )
-                )
+
+                # Release recency
+                if release.is_recent:
+                    report.factors.append(
+                        self._create_factor(
+                            "release_recent",
+                            self.weights["release_recent"],
+                            applied=True,
+                            reason=f"Release published {release.age_days} days ago",
+                        )
+                    )
+
+                # Pre-release / draft warning
+                if release.is_prerelease or release.is_draft:
+                    report.factors.append(
+                        self._create_factor(
+                            "prerelease",
+                            self.weights["prerelease"],
+                            applied=True,
+                            reason="This is a pre-release or draft version",
+                        )
+                    )
 
             # Add metadata
             report.metadata["github"] = {
                 "owner": parsed["owner"],
                 "repo": parsed["repo"],
-                "tag": parsed["tag"],
-                "release_name": release.name,
-                "published_at": release.published_at,
+                "repo_name": repo.name,
+                "description": repo.description,
+                "stars": repo.stargazers_count,
                 "repo_age_days": repo.age_days,
-                "release_age_days": release.age_days,
-                "is_maintainer": client.is_maintainer(release),
+                "is_established": repo.is_established,
             }
+
+            if parsed.get("type") == "release":
+                report.metadata["github"]["tag"] = parsed.get("tag")
 
         except Exception as e:
             # GitHub API failed, but don't fail the whole analysis
@@ -494,9 +499,9 @@ class TrustEngine:
                     )
                     break
 
-        # Factor 6: GitHub Release analysis
-        if is_github_releases_url(url):
-            self._analyze_github_release(url, report)
+        # Factor 6: GitHub analysis (for any GitHub URL)
+        if is_github_url(url):
+            self._analyze_github_resource(url, report)
 
         # Calculate total score
         score = sum(f.points for f in report.factors)
