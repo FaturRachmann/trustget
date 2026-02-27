@@ -1,12 +1,10 @@
-trustget (0.1.0) unstable; urgency=medium
+trustget (0.2.0) unstable; urgency=medium
 
-  * Initial release
-  - Smart download with progress bar and resume support
-  - Automatic checksum verification (SHA256/SHA512/MD5)
-  - GitHub Releases integration with metadata extraction
-  - Trust score engine with transparent scoring (0-100)
-  - GPG signature verification
-  - Sandbox execution support
-  - JSON output for CI/CD integration
+  * Enhanced GitHub URL detection (support all GitHub URLs)
+  * Richer trust analysis output with repo info
+  * Risk-based recommendations and security tips
+  * Better visual output with emojis
+  * Fixed CI workflows (mypy non-blocking, twine dependency)
+  * Improved test coverage (102/102 tests passing)
 
- -- TrustGet Team <trustget@example.com>  Fri, 27 Feb 2026 00:00:00 +0000
+ -- TrustGet Team <trustget@example.com>  Fri, 27 Feb 2026 14:17:41 +0700
