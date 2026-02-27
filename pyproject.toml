@@ -27,6 +27,7 @@ dependencies = [
   "click>=8.0",
   "python-gnupg>=0.5",
   "platformdirs>=3.0",
+  "tomli-w>=1.0.0",
 ]
 
 [project.scripts]
